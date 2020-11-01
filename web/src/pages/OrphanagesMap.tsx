@@ -22,7 +22,9 @@ const OrphanagesMap = () => {
 		<div id="page-map">
 			<aside>
 				<header>
-					<img src={marker} alt="Happy Marker" />
+					<Link to="/">
+						<img src={marker} alt="Happy" />
+					</Link>
 
 					<h2>Escolha um orfanato no mapa</h2>
 					<p>Muitas crianças estão esperando a sua visita {`:)`}</p>
@@ -50,14 +52,14 @@ const OrphanagesMap = () => {
 						className="map-popup"
 					>
 						Lar das meninas
-						<Link to="">
+						<Link to="/orphanages/1">
 							<FiArrowRight size={20} color="#FFF" />
 						</Link>
 					</Popup>
 				</Marker>
 			</Map>
 
-			<Link to="" className="create-orphanage">
+			<Link to="/orphanages/create" className="create-orphanage">
 				<FiPlus size={32} color="#FFF" />
 			</Link>
 		</div>
