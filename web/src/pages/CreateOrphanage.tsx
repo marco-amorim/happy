@@ -41,6 +41,20 @@ export default function CreateOrphanage() {
 		setPreviewImages(selectedImagesPreview);
 	}
 
+	function removeImage(image: String | File) {
+		setImages(
+			images.filter((currentImage) => {
+				return image !== currentImage;
+			})
+		);
+
+		setPreviewImages(
+			previewImages.filter((currentPreviewImage) => {
+				return image !== currentPreviewImage;
+			})
+		);
+	}
+
 	async function handleSubmit(event: FormEvent) {
 		event.preventDefault();
 
@@ -121,7 +135,14 @@ export default function CreateOrphanage() {
 
 							<div className="images-container">
 								{previewImages.map((image) => {
-									return <img key={image} src={image} alt={name} />;
+									return (
+										<div key={image} className="image-item">
+											<button type="button" onClick={() => removeImage(image)}>
+												X
+											</button>
+											<img src={image} alt={name} />
+										</div>
+									);
 								})}
 								<label htmlFor="image[]" className="new-image">
 									<FiPlus size={24} color="#15b6d6" />
