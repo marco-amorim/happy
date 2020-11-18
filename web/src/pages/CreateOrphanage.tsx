@@ -42,17 +42,19 @@ export default function CreateOrphanage() {
 	}
 
 	function removeImage(image: String | File) {
-		setImages(
-			images.filter((currentImage) => {
-				return image !== currentImage;
-			})
+		const filteredImages = images.filter((currentImage) => {
+			return image !== currentImage;
+		});
+
+		setImages(filteredImages);
+
+		const filteredPreviewImages = previewImages.filter(
+			(currentPreviewImage) => {
+				return image !== currentPreviewImage;
+			}
 		);
 
-		setPreviewImages(
-			previewImages.filter((currentPreviewImage) => {
-				return image !== currentPreviewImage;
-			})
-		);
+		setPreviewImages(filteredPreviewImages);
 	}
 
 	async function handleSubmit(event: FormEvent) {
