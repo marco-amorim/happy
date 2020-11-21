@@ -29,6 +29,10 @@ const OrphanagesMap = () => {
 		navigation.navigate('OrphanageDetails');
 	}
 
+	function handleNavigateToCreateOrphanage() {
+		navigation.navigate('SelectMapPosition');
+	}
+
 	return (
 		<View style={styles.container}>
 			<MapView
@@ -62,7 +66,7 @@ const OrphanagesMap = () => {
 
 				<TouchableOpacity
 					style={styles.createOrphanageButton}
-					onPress={() => {}}
+					onPress={handleNavigateToCreateOrphanage}
 				>
 					<Feather name="plus" size={20} color="#FFF" />
 				</TouchableOpacity>
