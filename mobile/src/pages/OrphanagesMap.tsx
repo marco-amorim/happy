@@ -1,33 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { Feather } from '@expo/vector-icons';
-import { useFonts } from 'expo-font';
-import {
-	Nunito_600SemiBold,
-	Nunito_700Bold,
-	Nunito_800ExtraBold,
-} from '@expo-google-fonts/nunito';
-
 import mapMarker from '../images/map-marker.png';
 import { useNavigation } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
+import api from '../services/api';
+
+interface Orphanage {
+	id: number;
+	latitude: number;
+	longitude: number;
+	name: string;
+}
 
 const OrphanagesMap = () => {
-	const [fontsLoaded] = useFonts({
-		Nunito_600SemiBold,
-		Nunito_700Bold,
-		Nunito_800ExtraBold,
-	});
-
-	if (!fontsLoaded) {
-		return null;
-	}
-
+	const [orphanages, setOrphanages] = useState<Orphanage[]>([]);
 	const navigation = useNavigation();
 
-	function handleNavigateToOrphanageDetails() {
-		navigation.navigate('OrphanageDetails');
+	useEffect(() => {
+		api.get('/orphanages').then((res) => {
+			const { data } = res;
+			setOrphanages(data);
+		});
+	}, []);
+
+	function handleNavigateToOrphanageDetails(id: number) {
+		navigation.navigate('OrphanageDetails', { id });
 	}
 
 	function handleNavigateToCreateOrphanage() {
@@ -40,26 +39,37 @@ const OrphanagesMap = () => {
 				provider={PROVIDER_GOOGLE}
 				style={styles.map}
 				initialRegion={{
-					latitude: -27.2092052,
-					longitude: -49.6401092,
+					latitude: -27.596124940041427,
+					longitude: -48.57375383377076,
 					latitudeDelta: 0.008,
 					longitudeDelta: 0.008,
 				}}
 			>
-				<Marker
-					calloutAnchor={{
-						x: 2.7,
-						y: 0.8,
-					}}
-					icon={mapMarker}
-					coordinate={{ latitude: -27.2092052, longitude: -49.6401092 }}
-				>
-					<Callout tooltip={true} onPress={handleNavigateToOrphanageDetails}>
-						<View style={styles.calloutContainer}>
-							<Text style={styles.calloutText}>Lar das meninas</Text>
-						</View>
-					</Callout>
-				</Marker>
+				{orphanages.map((orphanage) => {
+					return (
+						<Marker
+							key={orphanage.id}
+							calloutAnchor={{
+								x: 2.7,
+								y: 0.8,
+							}}
+							icon={mapMarker}
+							coordinate={{
+								latitude: orphanage.latitude,
+								longitude: orphanage.longitude,
+							}}
+						>
+							<Callout
+								tooltip={true}
+								onPress={() => handleNavigateToOrphanageDetails(orphanage.id)}
+							>
+								<View style={styles.calloutContainer}>
+									<Text style={styles.calloutText}>{orphanage.name}</Text>
+								</View>
+							</Callout>
+						</Marker>
+					);
+				})}
 			</MapView>
 
 			<View style={styles.footer}>
@@ -100,7 +110,6 @@ const styles = StyleSheet.create({
 	calloutText: {
 		color: '#0089a5',
 		fontSize: 14,
-		fontFamily: 'Nunito_700Bold',
 	},
 
 	footer: {
@@ -123,7 +132,6 @@ const styles = StyleSheet.create({
 
 	footerText: {
 		color: '#8fa7b3',
-		fontFamily: 'Nunito_700Bold',
 	},
 
 	createOrphanageButton: {
